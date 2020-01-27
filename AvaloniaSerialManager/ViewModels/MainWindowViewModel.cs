@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Text;
@@ -11,14 +12,22 @@ namespace AvaloniaSerialManager.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         public string Greeting => "Welcome to Avalonia!";
-        
+
         private Timer _stateTimer;
 
-        private string _serialPortsString;
-        public string SerialPortsString
+        private string _selectedPortName;
+        public string SelectedPortName
         {
-            get => _serialPortsString;
-            set => this.RaiseAndSetIfChanged(ref _serialPortsString, value);
+            get => _selectedPortName;
+            set => this.RaiseAndSetIfChanged(ref _selectedPortName, value);
+        }
+
+        private ObservableCollection<string> _serialPortNames;
+
+        public ObservableCollection<string> SerialPortNames
+        {
+            get => _serialPortNames;
+            set => this.RaiseAndSetIfChanged(ref _serialPortNames, value);
         }
 
 
@@ -28,32 +37,34 @@ namespace AvaloniaSerialManager.ViewModels
         {
             _serialPort = new SerialPort();
 
+            _stateTimer = new Timer(UpdateAvailableSerialPorts, null, Timeout.Infinite, 5000);
 
-            _stateTimer = new Timer(UpdateAvailableSerialPorts,null,Timeout.Infinite,5000);
-            
-            
+
         }
 
         internal void DisposeInternal()
         {
             if (_stateTimer != null)
-                 _stateTimer.Dispose();
+                _stateTimer.Dispose();
         }
 
-        public void UpdateAvailableSerialPorts(Object state) {
+        public void UpdateAvailableSerialPorts(Object state)
+        {
 
-            var availableSerialPortsNames = String.Empty;
+            var serialPorts = new List<string>();
             Debug.WriteLine("[UpdateAvailableSerialPorts]Called");
 
             foreach (string s in SerialPort.GetPortNames())
             {
                 Debug.WriteLine($"{s}");
                 if (!string.IsNullOrEmpty(s))
-                    availableSerialPortsNames=string.Join(" ", availableSerialPortsNames, s);
+                {
+                    //availableSerialPortsNames = string.Join(" ", availableSerialPortsNames, s);
+                    serialPorts.Add(s);
+                }
             }
 
-            SerialPortsString = availableSerialPortsNames;
-
+            SerialPortNames = new ObservableCollection<string>(serialPorts);
         }
 
         public void GetSerialPortsCommand()

@@ -10,16 +10,39 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaSerialManager">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
   <DockPanel>
-    <Button DockPanel.Dock="Top" x:Name="GetSerialPortsButton"
-            Content="GetSerialPorts" 
-            Command="{Binding $parent[Window].DataContext.GetSerialPortsCommand}"/>
-    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SerialPortsString}"/>
+    <StackPanel DockPanel.Dock="Top">
+      <Button x:Name="GetSerialPortsButton"
+              Content="GetSerialPorts"
+              Command="{Binding $parent[Window].DataContext.GetSerialPortsCommand}"/>
+      <!--
+      <ComboBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedSerialPort}"/>-->
+      <TextBlock>Available serial ports</TextBlock>
+      <ListBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedPortName}" SelectionMode="Single"/>
+      <!--creare una tab per connessione in futuro-->
+      <TextBlock>Baud Rate</TextBlock>
+      <ComboBox>
+        <ComboBoxItem>300</ComboBoxItem>
+        <ComboBoxItem>600</ComboBoxItem>
+        <ComboBoxItem>1200</ComboBoxItem>
+        <ComboBoxItem>2400</ComboBoxItem>
+        <ComboBoxItem>4800</ComboBoxItem>
+        <ComboBoxItem IsSelected="True">9600</ComboBoxItem>
+        <ComboBoxItem>14400</ComboBoxItem>
+        <ComboBoxItem>19200</ComboBoxItem>
+        <ComboBoxItem>28800</ComboBoxItem>
+        <ComboBoxItem>38400</ComboBoxItem>
+        <ComboBoxItem>57600</ComboBoxItem>
+        <ComboBoxItem>115200</ComboBoxItem>
+      </ComboBox>
+    </StackPanel>
+
+
   </DockPanel>
-    
-  
-    
+
+
+
 </Window>
