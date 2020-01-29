@@ -6,6 +6,7 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using ReactiveUI;
+using System.Linq;
 
 namespace AvaloniaSerialManager.ViewModels
 {
@@ -14,6 +15,40 @@ namespace AvaloniaSerialManager.ViewModels
         public string Greeting => "Welcome to Avalonia!";
 
         private Timer _stateTimer;
+
+        private long _baudRate;
+
+        public long BaudRate
+        {
+            get { return _baudRate; }
+            set { this.RaiseAndSetIfChanged(ref _baudRate, value); }
+        }
+
+
+        private ObservableCollection<long> _baudRates;
+        public ObservableCollection<long> BaudRates
+        {
+            get { return _baudRates; }
+            set { this.RaiseAndSetIfChanged(ref _baudRates, value); }
+        }
+
+
+        private Parity _parity;
+        public Parity Parity
+        {
+            get { return _parity; }
+            set { this.RaiseAndSetIfChanged(ref _parity, value); }
+        }
+
+
+        private ObservableCollection<Parity> _parities;
+        public ObservableCollection<Parity> Parities
+        {
+            get { return _parities; }
+            set { this.RaiseAndSetIfChanged(ref _parities, value); }
+        }
+
+
 
         private string _selectedPortName;
         public string SelectedPortName
@@ -39,6 +74,22 @@ namespace AvaloniaSerialManager.ViewModels
 
             _stateTimer = new Timer(UpdateAvailableSerialPorts, null, Timeout.Infinite, 5000);
 
+            _baudRates = new ObservableCollection<long>();
+            _baudRates.Add(300);
+            _baudRates.Add(600);
+            _baudRates.Add(1200);
+            _baudRates.Add(2400);
+            _baudRates.Add(4800);
+            _baudRates.Add(9600);
+            _baudRates.Add(14400);
+            _baudRates.Add(19200);
+            _baudRates.Add(28800);
+            _baudRates.Add(38400);
+            _baudRates.Add(57600);
+            _baudRates.Add(115200);
+
+            var parityList = Enum.GetValues(typeof(Parity)).Cast<Parity>();
+            _parities = new ObservableCollection<Parity>(parityList);
 
         }
 
@@ -80,6 +131,15 @@ namespace AvaloniaSerialManager.ViewModels
             _stateTimer.Change(0, 5000);
 
             //Content = new AddItemViewModel();
+        }
+
+    }
+    //https://stackoverflow.com/questions/972307/how-to-loop-through-all-enum-values-in-c
+    public static class EnumUtil
+    {
+        public static IEnumerable<T> GetValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
         }
     }
 }

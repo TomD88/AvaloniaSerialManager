@@ -1,6 +1,7 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:AvaloniaSerialManager.ViewModels;assembly=AvaloniaSerialManager"
+        xmlns:converters="clr-namespace:AvaloniaSerialManager.Converters;assembly=AvaloniaSerialManager"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="250"
@@ -13,6 +14,12 @@
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
+
+  <Window.Resources>
+    <converters:StringToParityConverter x:Key="StringToParityConverter"/>
+  </Window.Resources>
+
+
   <DockPanel>
     <StackPanel DockPanel.Dock="Top">
       <Button x:Name="GetSerialPortsButton"
@@ -24,20 +31,8 @@
       <ListBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedPortName}" SelectionMode="Single"/>
       <!--creare una tab per connessione in futuro-->
       <TextBlock>Baud Rate</TextBlock>
-      <ComboBox>
-        <ComboBoxItem>300</ComboBoxItem>
-        <ComboBoxItem>600</ComboBoxItem>
-        <ComboBoxItem>1200</ComboBoxItem>
-        <ComboBoxItem>2400</ComboBoxItem>
-        <ComboBoxItem>4800</ComboBoxItem>
-        <ComboBoxItem IsSelected="True">9600</ComboBoxItem>
-        <ComboBoxItem>14400</ComboBoxItem>
-        <ComboBoxItem>19200</ComboBoxItem>
-        <ComboBoxItem>28800</ComboBoxItem>
-        <ComboBoxItem>38400</ComboBoxItem>
-        <ComboBoxItem>57600</ComboBoxItem>
-        <ComboBoxItem>115200</ComboBoxItem>
-      </ComboBox>
+      <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
+      <ComboBox Items="{Binding Parities}" SelectedItem="{Binding Parity,Converter={StaticResource StringToParityConverter}}"/>
     </StackPanel>
 
 
