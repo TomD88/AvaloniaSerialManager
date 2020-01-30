@@ -7,6 +7,7 @@ namespace AvaloniaSerialManager.Converters
 {
     public class StringToParityConverter : IValueConverter
     {
+        //input -> string
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return Enum.GetName(typeof(Parity), value);

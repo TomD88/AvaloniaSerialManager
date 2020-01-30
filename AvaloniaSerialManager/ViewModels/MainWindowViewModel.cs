@@ -48,6 +48,28 @@ namespace AvaloniaSerialManager.ViewModels
             set { this.RaiseAndSetIfChanged(ref _parities, value); }
         }
 
+        //Il valore dei bit di dati è minore di 5 o maggiore di 8.//the default value is 8!!!
+        private int _databits;
+        public int Databits
+        {
+            get { return _databits; }
+            set { this.RaiseAndSetIfChanged(ref _databits, value); }
+        }
+
+        private StopBits _currentStopBits;
+
+        public StopBits CurrentStopBits
+        {
+            get { return _currentStopBits; }
+            set { this.RaiseAndSetIfChanged(ref _currentStopBits, value); }
+        }
+
+        private ObservableCollection<StopBits> _stopBits;
+        public ObservableCollection<StopBits> StopBits
+        {
+            get { return _stopBits; }
+            set { this.RaiseAndSetIfChanged(ref _stopBits, value); }
+        }
 
 
         private string _selectedPortName;
@@ -90,6 +112,27 @@ namespace AvaloniaSerialManager.ViewModels
 
             var parityList = Enum.GetValues(typeof(Parity)).Cast<Parity>();
             _parities = new ObservableCollection<Parity>(parityList);
+
+            _databits = 8;
+
+            var stopbits = Enum.GetValues(typeof(StopBits)).Cast<StopBits>();
+            _stopBits = new ObservableCollection<StopBits>(stopbits);
+            //// Allow the user to set the appropriate properties.
+            //_serialPort.PortName = SetPortName(_serialPort.PortName);//OK
+            //_serialPort.BaudRate = SetPortBaudRate(_serialPort.BaudRate);//OK
+            //_serialPort.Parity = SetPortParity(_serialPort.Parity);//OK
+            //_serialPort.DataBits = SetPortDataBits(_serialPort.DataBits);OK
+            //_serialPort.StopBits = SetPortStopBits(_serialPort.StopBits);
+            //_serialPort.Handshake = SetPortHandshake(_serialPort.Handshake);
+
+            //// Set the read/write timeouts
+            //_serialPort.ReadTimeout = 500;
+            //_serialPort.WriteTimeout = 500;
+
+            //_serialPort.Open();
+            //_continue = true;
+            //readThread.Start();
+
 
         }
 

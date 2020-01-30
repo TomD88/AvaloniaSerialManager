@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:AvaloniaSerialManager.ViewModels;assembly=AvaloniaSerialManager"
         xmlns:converters="clr-namespace:AvaloniaSerialManager.Converters;assembly=AvaloniaSerialManager"
+        xmlns:serialtypes="clr-namespace:System.IO.Ports;assembly=System.IO.Ports"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="250"
@@ -17,6 +18,7 @@
 
   <Window.Resources>
     <converters:StringToParityConverter x:Key="StringToParityConverter"/>
+    <converters:StringToEnumConverter x:Key="StringToEnumConverter"/>
   </Window.Resources>
 
 
@@ -32,7 +34,18 @@
       <!--creare una tab per connessione in futuro-->
       <TextBlock>Baud Rate</TextBlock>
       <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
-      <ComboBox Items="{Binding Parities}" SelectedItem="{Binding Parity,Converter={StaticResource StringToParityConverter}}"/>
+      <ComboBox Items="{Binding Parities}" 
+                SelectedItem="{Binding Parity,
+                Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Parity}}"
+                
+                />
+      <!--Creare un controllo spinner limitato con min range e max range?-->
+      <ButtonSpinner Content="{Binding Databits}"/>
+
+      <ComboBox Items="{Binding StopBits}"
+                SelectedItem="{Binding CurrentStopBits,
+                 Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:StopBits}}}" />
+
     </StackPanel>
 
 
