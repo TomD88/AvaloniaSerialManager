@@ -5,8 +5,8 @@
         xmlns:serialtypes="clr-namespace:System.IO.Ports;assembly=System.IO.Ports"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="250"
-        Height="250"
+        mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="400"
+        Height="400"
         Width="250"
         x:Class="AvaloniaSerialManager.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -34,18 +34,32 @@
       <!--creare una tab per connessione in futuro-->
       <TextBlock>Baud Rate</TextBlock>
       <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
-      <ComboBox Items="{Binding Parities}" 
+      <ComboBox Items="{Binding Parities}"
                 SelectedItem="{Binding Parity,
                 Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Parity}}"
                 
                 />
       <!--Creare un controllo spinner limitato con min range e max range?-->
+      <TextBlock>Databits</TextBlock>
       <ButtonSpinner Content="{Binding Databits}"/>
 
+      <TextBlock>StopBits</TextBlock>
       <ComboBox Items="{Binding StopBits}"
                 SelectedItem="{Binding CurrentStopBits,
                  Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:StopBits}}}" />
+      
+      <TextBlock>Handshakes</TextBlock>
+      <ComboBox Items="{Binding Handshakes}"
+                  SelectedItem="{Binding CurrentHandshake,
+                 Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Handshake}}}" />
 
+      <!--Nota:Verificare anche l'approccio con i command tradizionali di WPF-->
+      <Button x:Name="OpenSerialPortButton" Command="{Binding $parent[Window].DataContext.OpenSerialPortCommand}" Content="Open Selected"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+      <ListBox Items="{Binding ReceivedData}" Height="100" 
+               ScrollViewer.VerticalScrollBarVisibility="Visible"
+               ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+      
     </StackPanel>
 
 

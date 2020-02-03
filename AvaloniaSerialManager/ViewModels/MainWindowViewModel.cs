@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using ReactiveUI;
 using System.Linq;
+using Avalonia.Threading;
 
 namespace AvaloniaSerialManager.ViewModels
 {
@@ -14,19 +15,29 @@ namespace AvaloniaSerialManager.ViewModels
     {
         public string Greeting => "Welcome to Avalonia!";
 
+        public ObservableCollection<string> ReceivedData { get; set; }
+
+        //private ObservableCollection<string> _receivedData;
+        //public ObservableCollection<string> ReceivedData
+        //{
+        //    get { return _receivedData; }
+        //    set { this.RaiseAndSetIfChanged(ref _receivedData, value); }
+        //}
+
+
         private Timer _stateTimer;
 
-        private long _baudRate;
+        private int _baudRate;
 
-        public long BaudRate
+        public int BaudRate
         {
             get { return _baudRate; }
             set { this.RaiseAndSetIfChanged(ref _baudRate, value); }
         }
 
 
-        private ObservableCollection<long> _baudRates;
-        public ObservableCollection<long> BaudRates
+        private ObservableCollection<int> _baudRates;
+        public ObservableCollection<int> BaudRates
         {
             get { return _baudRates; }
             set { this.RaiseAndSetIfChanged(ref _baudRates, value); }
@@ -87,6 +98,24 @@ namespace AvaloniaSerialManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _serialPortNames, value);
         }
 
+        private Handshake _currentHandshake;
+
+        public Handshake CurrentHandshake
+        {
+            get { return _currentHandshake; }
+            set { this.RaiseAndSetIfChanged(ref _currentHandshake, value); }
+        }
+
+        private ObservableCollection<Handshake> _handshakes;
+
+        public ObservableCollection<Handshake> Handshakes
+        {
+            get { return _handshakes; }
+            set { this.RaiseAndSetIfChanged(ref _handshakes, value); }
+        }
+
+
+
 
         private SerialPort _serialPort;
 
@@ -96,7 +125,7 @@ namespace AvaloniaSerialManager.ViewModels
 
             _stateTimer = new Timer(UpdateAvailableSerialPorts, null, Timeout.Infinite, 5000);
 
-            _baudRates = new ObservableCollection<long>();
+            _baudRates = new ObservableCollection<int>();
             _baudRates.Add(300);
             _baudRates.Add(600);
             _baudRates.Add(1200);
@@ -117,12 +146,17 @@ namespace AvaloniaSerialManager.ViewModels
 
             var stopbits = Enum.GetValues(typeof(StopBits)).Cast<StopBits>();
             _stopBits = new ObservableCollection<StopBits>(stopbits);
+
+
+            var handshakes = Enum.GetValues(typeof(Handshake)).Cast<Handshake>();
+            _handshakes = new ObservableCollection<Handshake>(handshakes);
+
             //// Allow the user to set the appropriate properties.
             //_serialPort.PortName = SetPortName(_serialPort.PortName);//OK
             //_serialPort.BaudRate = SetPortBaudRate(_serialPort.BaudRate);//OK
             //_serialPort.Parity = SetPortParity(_serialPort.Parity);//OK
-            //_serialPort.DataBits = SetPortDataBits(_serialPort.DataBits);OK
-            //_serialPort.StopBits = SetPortStopBits(_serialPort.StopBits);
+            //_serialPort.DataBits = SetPortDataBits(_serialPort.DataBits);//OK
+            //_serialPort.StopBits = SetPortStopBits(_serialPort.StopBits);//OK
             //_serialPort.Handshake = SetPortHandshake(_serialPort.Handshake);
 
             //// Set the read/write timeouts
@@ -133,13 +167,24 @@ namespace AvaloniaSerialManager.ViewModels
             //_continue = true;
             //readThread.Start();
 
-
+            ReceivedData = new ObservableCollection<string>();
         }
 
         internal void DisposeInternal()
         {
             if (_stateTimer != null)
+            {
                 _stateTimer.Dispose();
+                _stateTimer = null;
+            }
+
+            if (_serialPort != null && _serialPort.IsOpen)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+                _serialPort = null;
+            }
+
         }
 
         public void UpdateAvailableSerialPorts(Object state)
@@ -176,6 +221,28 @@ namespace AvaloniaSerialManager.ViewModels
             //Content = new AddItemViewModel();
         }
 
+        public void OpenSerialPortCommand()
+        {
+            if (string.IsNullOrEmpty(_selectedPortName))
+                return;
+            _serialPort = new SerialPort(_selectedPortName);
+
+            //_serialPort = new SerialPort(_selectedPortName, _baudRate, _parity, _databits, _currentStopBits);
+            //_serialPort.Handshake = _currentHandshake;
+            _serialPort.ReadTimeout = 500;
+            _serialPort.WriteTimeout = 500;
+            
+            _serialPort.DataReceived += _serialPort_DataReceived;
+            _serialPort.Open();
+
+        }
+
+        private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            var line=_serialPort.ReadLine();
+            Dispatcher.UIThread.Post(() => ReceivedData.Add(line));
+            
+        }
     }
     //https://stackoverflow.com/questions/972307/how-to-loop-through-all-enum-values-in-c
     public static class EnumUtil

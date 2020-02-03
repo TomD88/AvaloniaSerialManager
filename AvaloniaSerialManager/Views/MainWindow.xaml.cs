@@ -9,6 +9,7 @@ namespace AvaloniaSerialManager.Views
     {
 
         public Button GetSerialPortsButton => this.FindControl<Button>("GetSerialPortsButton");
+        public Button OpenSerialPortButton => this.FindControl<Button>("OpenSerialPortButton");
         public MainWindow()
         {
             InitializeComponent();
