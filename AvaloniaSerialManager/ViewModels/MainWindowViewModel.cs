@@ -139,18 +139,20 @@ namespace AvaloniaSerialManager.ViewModels
             _baudRates.Add(57600);
             _baudRates.Add(115200);
 
+            _baudRate = 9600;
+
             var parityList = Enum.GetValues(typeof(Parity)).Cast<Parity>();
             _parities = new ObservableCollection<Parity>(parityList);
-
+            _parity = Parity.None;
             _databits = 8;
 
             var stopbits = Enum.GetValues(typeof(StopBits)).Cast<StopBits>();
             _stopBits = new ObservableCollection<StopBits>(stopbits);
-
+            _currentStopBits = System.IO.Ports.StopBits.One;
 
             var handshakes = Enum.GetValues(typeof(Handshake)).Cast<Handshake>();
             _handshakes = new ObservableCollection<Handshake>(handshakes);
-
+            _currentHandshake = Handshake.None;
             //// Allow the user to set the appropriate properties.
             //_serialPort.PortName = SetPortName(_serialPort.PortName);//OK
             //_serialPort.BaudRate = SetPortBaudRate(_serialPort.BaudRate);//OK
@@ -225,23 +227,27 @@ namespace AvaloniaSerialManager.ViewModels
         {
             if (string.IsNullOrEmpty(_selectedPortName))
                 return;
-            _serialPort = new SerialPort(_selectedPortName);
-
-            //_serialPort = new SerialPort(_selectedPortName, _baudRate, _parity, _databits, _currentStopBits);
-            //_serialPort.Handshake = _currentHandshake;
-            _serialPort.ReadTimeout = 500;
+            
+            //Take the BaseStream of serialport for async operations
+            _serialPort = new SerialPort(_selectedPortName, _baudRate, _parity, _databits, _currentStopBits);//_serialPort = new SerialPort(_selectedPortName);
+            _serialPort.Handshake = _currentHandshake;
+            _serialPort.ReadTimeout = 500;//Make these two values variables
             _serialPort.WriteTimeout = 500;
             
+            //Eventually create a task for datareceived
             _serialPort.DataReceived += _serialPort_DataReceived;
+            Debug.WriteLine("Principal "+ Thread.CurrentThread.ManagedThreadId);
             _serialPort.Open();
 
         }
 
+        //Which thread execute this portion of code?
         private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            Debug.WriteLine("Delegate " + Thread.CurrentThread.ManagedThreadId);
+            //Thread.Sleep(10000);
             var line=_serialPort.ReadLine();
-            Dispatcher.UIThread.Post(() => ReceivedData.Add(line));
-            
+            Dispatcher.UIThread.Post(() => ReceivedData.Insert(0,line));   
         }
     }
     //https://stackoverflow.com/questions/972307/how-to-loop-through-all-enum-values-in-c
