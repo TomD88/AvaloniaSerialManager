@@ -37,12 +37,22 @@ namespace AvaloniaSerialManager.ViewModels
 
 
         private ObservableCollection<int> _baudRates;
+
+        internal void DecreaseDatabits()
+        {
+            throw new NotImplementedException();
+        }
+
         public ObservableCollection<int> BaudRates
         {
             get { return _baudRates; }
             set { this.RaiseAndSetIfChanged(ref _baudRates, value); }
         }
 
+        internal void IncreaseDatabits()
+        {
+            throw new NotImplementedException();
+        }
 
         private Parity _parity;
         public Parity Parity
@@ -64,7 +74,11 @@ namespace AvaloniaSerialManager.ViewModels
         public int Databits
         {
             get { return _databits; }
-            set { this.RaiseAndSetIfChanged(ref _databits, value); }
+            set {
+                if (value < 5 || value > 8)
+                    return;
+                this.RaiseAndSetIfChanged(ref _databits, value); 
+            }
         }
 
         private StopBits _currentStopBits;
@@ -245,7 +259,7 @@ namespace AvaloniaSerialManager.ViewModels
         private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             Debug.WriteLine("Delegate " + Thread.CurrentThread.ManagedThreadId);
-            //Thread.Sleep(10000);
+            // Thread.Sleep(10000);
             var line=_serialPort.ReadLine();
             Dispatcher.UIThread.Post(() => ReceivedData.Insert(0,line));   
         }

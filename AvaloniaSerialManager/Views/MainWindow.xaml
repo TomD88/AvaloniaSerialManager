@@ -41,8 +41,7 @@
                 />
       <!--Creare un controllo spinner limitato con min range e max range?-->
       <TextBlock>Databits</TextBlock>
-      <ButtonSpinner Content="{Binding Databits}"/>
-
+      <ButtonSpinner x:Name="DatabitsSpinner" Content="{Binding Databits}" AllowSpin="True"/>
       <TextBlock>StopBits</TextBlock>
       <ComboBox Items="{Binding StopBits}"
                 SelectedItem="{Binding CurrentStopBits,
