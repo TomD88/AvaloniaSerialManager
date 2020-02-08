@@ -32,12 +32,12 @@ namespace AvaloniaSerialManager.Views
         {
             if (e.Direction.Equals(SpinDirection.Decrease))
             {
-                ((MainWindowViewModel)DataContext).Databits -= 1;
+                ((MainWindowViewModel)DataContext).CurrentDatabits -= 1;
                 return;
             }
             else if (e.Direction.Equals(SpinDirection.Increase))
             {
-                ((MainWindowViewModel)DataContext).Databits += 1;
+                ((MainWindowViewModel)DataContext).CurrentDatabits += 1;
             }
         }
 

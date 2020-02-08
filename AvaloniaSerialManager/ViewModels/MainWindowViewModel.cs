@@ -70,14 +70,15 @@ namespace AvaloniaSerialManager.ViewModels
         }
 
         //Il valore dei bit di dati è minore di 5 o maggiore di 8.//the default value is 8!!!
-        private int _databits;
-        public int Databits
+        private int _currentDatabits;
+        public int CurrentDatabits
         {
-            get { return _databits; }
+            get { return _currentDatabits; }
             set {
+            //https://docs.microsoft.com/it-it/dotnet/api/system.io.ports.serialport.databits?view=netframework-4.8&viewFallbackFrom=netcore-3.1
                 if (value < 5 || value > 8)
                     return;
-                this.RaiseAndSetIfChanged(ref _databits, value); 
+                this.RaiseAndSetIfChanged(ref _currentDatabits, value); 
             }
         }
 
@@ -158,7 +159,7 @@ namespace AvaloniaSerialManager.ViewModels
             var parityList = Enum.GetValues(typeof(Parity)).Cast<Parity>();
             _parities = new ObservableCollection<Parity>(parityList);
             _parity = Parity.None;
-            _databits = 8;
+            _currentDatabits = 8;
 
             var stopbits = Enum.GetValues(typeof(StopBits)).Cast<StopBits>();
             _stopBits = new ObservableCollection<StopBits>(stopbits);
@@ -243,7 +244,7 @@ namespace AvaloniaSerialManager.ViewModels
                 return;
             
             //Take the BaseStream of serialport for async operations
-            _serialPort = new SerialPort(_selectedPortName, _baudRate, _parity, _databits, _currentStopBits);//_serialPort = new SerialPort(_selectedPortName);
+            _serialPort = new SerialPort(_selectedPortName, _baudRate, _parity, _currentDatabits, _currentStopBits);//_serialPort = new SerialPort(_selectedPortName);
             _serialPort.Handshake = _currentHandshake;
             _serialPort.ReadTimeout = 500;//Make these two values variables
             _serialPort.WriteTimeout = 500;
