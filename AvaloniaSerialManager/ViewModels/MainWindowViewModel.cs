@@ -34,26 +34,12 @@ namespace AvaloniaSerialManager.ViewModels
             get { return _baudRate; }
             set { this.RaiseAndSetIfChanged(ref _baudRate, value); }
         }
-
-
         private ObservableCollection<int> _baudRates;
-
-        internal void DecreaseDatabits()
-        {
-            throw new NotImplementedException();
-        }
-
         public ObservableCollection<int> BaudRates
         {
             get { return _baudRates; }
             set { this.RaiseAndSetIfChanged(ref _baudRates, value); }
         }
-
-        internal void IncreaseDatabits()
-        {
-            throw new NotImplementedException();
-        }
-
         private Parity _parity;
         public Parity Parity
         {

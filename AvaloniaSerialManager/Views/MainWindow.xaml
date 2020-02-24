@@ -5,9 +5,9 @@
         xmlns:serialtypes="clr-namespace:System.IO.Ports;assembly=System.IO.Ports"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="400"
-        Height="400"
-        Width="250"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+        Height="600"
+        Width="400"
         x:Class="AvaloniaSerialManager.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaSerialManager">
@@ -22,45 +22,68 @@
   </Window.Resources>
 
 
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top">
-      <Button x:Name="GetSerialPortsButton"
-              Content="GetSerialPorts"
-              Command="{Binding $parent[Window].DataContext.GetSerialPortsCommand}"/>
-      <!--
+  <DockPanel HorizontalAlignment="Stretch">
+    <WrapPanel DockPanel.Dock="Top">
+      <Menu>
+        <MenuItem Header="_File">
+          <MenuItem Header="_Open..."/>
+          <Separator/>
+          <MenuItem Header="_Exit"/>
+        </MenuItem>
+        <MenuItem Header="_Edit">
+          <MenuItem Header="Copy"/>
+          <MenuItem Header="Paste"/>
+        </MenuItem>
+      </Menu>
+    </WrapPanel>
+
+    <WrapPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+      <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Button x:Name="GetSerialPortsButton"
+                Content="GetSerialPorts"
+                Command="{Binding $parent[Window].DataContext.GetSerialPortsCommand}"/>
+        <!--
       <ComboBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedSerialPort}"/>-->
-      <TextBlock>Available serial ports</TextBlock>
-      <ListBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedPortName}" SelectionMode="Single"/>
-      <!--creare una tab per connessione in futuro-->
-      <TextBlock>Baud Rate</TextBlock>
-      <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
-      <ComboBox Items="{Binding Parities}"
-                SelectedItem="{Binding Parity,
-                Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Parity}}"
-                
-                />
-      <!--Creare un controllo spinner limitato con min range e max range?-->
-      <TextBlock>Databits</TextBlock>
-      <ButtonSpinner x:Name="DatabitsSpinner" Content="{Binding CurrentDatabits}" AllowSpin="True"/>
-      <TextBlock>StopBits</TextBlock>
-      <ComboBox Items="{Binding StopBits}"
-                SelectedItem="{Binding CurrentStopBits,
+        <TextBlock>Available serial ports</TextBlock>
+        <ListBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedPortName}" SelectionMode="Single"/>
+        <!--creare una tab per connessione in futuro-->
+        <TextBlock>Baud Rate</TextBlock>
+        <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
+        <TextBlock>Parity</TextBlock>
+        <ComboBox Items="{Binding Parities}" SelectedItem="{Binding Parity}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}"></TextBlock>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <!--Creare un controllo spinner limitato con min range e max range?-->
+        <TextBlock>Databits</TextBlock>
+        <ButtonSpinner x:Name="DatabitsSpinner" Content="{Binding CurrentDatabits}" AllowSpin="True"/>
+        <TextBlock>StopBits</TextBlock>
+        <ComboBox Items="{Binding StopBits}"
+                  SelectedItem="{Binding CurrentStopBits,
                  Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:StopBits}}}" />
-      
-      <TextBlock>Handshakes</TextBlock>
-      <ComboBox Items="{Binding Handshakes}"
-                  SelectedItem="{Binding CurrentHandshake,
+
+        <TextBlock>Handshakes</TextBlock>
+        <ComboBox Items="{Binding Handshakes}"
+                    SelectedItem="{Binding CurrentHandshake,
                  Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Handshake}}}" />
 
-      <!--Nota:Verificare anche l'approccio con i command tradizionali di WPF-->
-      <Button x:Name="OpenSerialPortButton" Command="{Binding $parent[Window].DataContext.OpenSerialPortCommand}" Content="Open Selected"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <!--Nota:Verificare anche l'approccio con i command tradizionali di WPF-->
+        <Button x:Name="OpenSerialPortButton" Command="{Binding $parent[Window].DataContext.OpenSerialPortCommand}" Content="Open Selected"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <ListBox Items="{Binding ReceivedData}" Height="100"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
 
-      <ListBox Items="{Binding ReceivedData}" Height="100" 
-               ScrollViewer.VerticalScrollBarVisibility="Visible"
-               ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
-      
-    </StackPanel>
 
+      </StackPanel>
+    </WrapPanel>
+
+    <WrapPanel DockPanel.Dock="Bottom">
+      <TextBlock>Notification area</TextBlock>
+    </WrapPanel>
 
   </DockPanel>
 

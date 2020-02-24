@@ -1,0 +1,73 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="400"
+             x:Class="AvaloniaSerialManager.Views.SerialConnectionView">
+  <Grid ShowGridLines="True" RowDefinitions="20,*,*,*" ColumnDefinitions="*,*">
+    <TextBlock HorizontalAlignment="Center" 
+      Grid.ColumnSpan="2" 
+      Grid.Row="0">Com1</TextBlock>
+    
+      <StackPanel Grid.Row="1">
+      <TextBlock >Baud Rate</TextBlock>
+      <ComboBox Items="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
+      </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="1">
+      <TextBlock>Parity</TextBlock>
+      <ComboBox Items="{Binding Parities}" SelectedItem="{Binding Parity}">
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding}"></TextBlock>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+    </StackPanel>
+
+  </Grid>
+  <!--<DockPanel HorizontalAlignment="Stretch">
+    
+
+    <WrapPanel DockPanel.Dock="Center" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+      <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Button x:Name="GetSerialPortsButton"
+                Content="GetSerialPorts"
+                Command="{Binding $parent[Window].DataContext.GetSerialPortsCommand}"/>
+        --><!--
+      <ComboBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedSerialPort}"/>--><!--
+        <TextBlock>Available serial ports</TextBlock>
+        <ListBox Items="{Binding SerialPortNames}" SelectedItem="{Binding SelectedPortName}" SelectionMode="Single"/>
+        --><!--creare una tab per connessione in futuro--><!--
+        
+        
+        --><!--Creare un controllo spinner limitato con min range e max range?--><!--
+        <TextBlock>Databits</TextBlock>
+        <ButtonSpinner x:Name="DatabitsSpinner" Content="{Binding CurrentDatabits}" AllowSpin="True"/>
+        <TextBlock>StopBits</TextBlock>
+        <ComboBox Items="{Binding StopBits}"
+                  SelectedItem="{Binding CurrentStopBits,
+                 Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:StopBits}}}" />
+
+        <TextBlock>Handshakes</TextBlock>
+        <ComboBox Items="{Binding Handshakes}"
+                    SelectedItem="{Binding CurrentHandshake,
+                 Converter={StaticResource StringToEnumConverter}, ConverterParameter={x:Type serialtypes:Handshake}}}" />
+
+        --><!--Nota:Verificare anche l'approccio con i command tradizionali di WPF--><!--
+        <Button x:Name="OpenSerialPortButton" Command="{Binding $parent[Window].DataContext.OpenSerialPortCommand}" Content="Open Selected"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <ListBox Items="{Binding ReceivedData}" Height="100"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ScrollViewer.HorizontalScrollBarVisibility="Visible"/>
+
+
+      </StackPanel>
+    </WrapPanel>
+
+    <WrapPanel DockPanel.Dock="Bottom">
+      <TextBlock>Notification area</TextBlock>
+    </WrapPanel>
+
+  </DockPanel>-->
+</UserControl>
